@@ -1,0 +1,9 @@
+root@16af1698cc6b:/# ls -lrt *.pig
+-rw-r--r-- 1 root root 507 Apr  6 03:07 episodeIV_dialouges.pig
+root@16af1698cc6b:/# cat episodeIV_dialouges.pig
+inputDialouges = LOAD 'hdfs:///user/root/input/episodeIV_dialouges.txt' USING PigStorage('\t') AS (name:chararray,dial:chararray);
+groupByName = GROUP inputDialouges BY name;
+names = FOREACH groupByName GENERATE $0 as name, COUNT($1) AS no_of_lines;
+namesOrdered = ORDER names BY no_of_lines DESC;
+-- Store the result in HDFS
+STORE namesOrdered INTO 'hdfs:///user/root/output/episodeIV_Output' USING PigStorage('\t');

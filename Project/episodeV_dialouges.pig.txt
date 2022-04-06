@@ -1,0 +1,9 @@
+root@16af1698cc6b:/# vim episodeV_dialouges.pig
+root@16af1698cc6b:/# cat episodeV_dialouges.pig
+-- Load input file from HDFS
+inputDialouges = LOAD 'hdfs:///user/root/input/episodeV_dialouges.txt' USING PigStorage('\t') AS (name:chararray,dial:chararray);
+groupByName = GROUP inputDialouges BY name;
+names = FOREACH groupByName GENERATE $0 as name, COUNT($1) AS no_of_lines;
+namesOrdered = ORDER names BY no_of_lines DESC;
+-- Store the result in HDFS
+STORE namesOrdered INTO 'hdfs:///user/root/output/episodeV_Output' USING PigStorage('\t');
